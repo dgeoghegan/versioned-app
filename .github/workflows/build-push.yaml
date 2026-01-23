@@ -102,4 +102,4 @@ jobs:
                 "image_tag": "${IMAGE_TAG}"
               }
             }
-JSON
+            JSON
