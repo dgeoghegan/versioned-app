@@ -91,7 +91,7 @@ jobs:
         shell: bash
         env:
           DISPATCH_TOKEN: ${{ secrets.GITOPS_REPO_DISPATCH_TOKEN }}
-          TARGET_REPO: ${{ secrets.GITOPS_RELEASE_CONTROLLER_REPO }}
+          TARGET_REPO: dgeoghegan/gitops-release-controller
           IMAGE_TAG: ${{ steps.tags.outputs.sha_tag }}
         run: |
           set -euo pipefail
