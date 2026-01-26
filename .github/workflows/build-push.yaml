@@ -108,11 +108,4 @@ jobs:
             -H "Authorization: Bearer ${DISPATCH_TOKEN}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "${API}" \
-            -d @- <<JSON
-            {
-              "event_type": "bump-dev-image",
-              "client_payload": {
-                "image_tag": "${IMAGE_TAG}"
-              }
-            }
-            JSON
+            -d "{\"event_type\":\"bump-dev-image\",\"client_payload\":{\"image_tag\":\"${IMAGE_TAG}\"}}"
