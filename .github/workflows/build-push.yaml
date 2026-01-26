@@ -34,6 +34,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
+          retry-max-attempts: 2
 
       - name: Verify assumed identity
         shell: bash
