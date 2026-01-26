@@ -96,12 +96,25 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ -z "${DISPATCH_TOKEN}" || -z "${TARGET_REPO}" ]]; then
-            echo "Missing dispatch token and/or target repo. Skipping dispatch."
-            exit 0
+          # Fail fast with readable output
+          if [[ -z "${DISPATCH_TOKEN}" ]]; then
+            echo "Missing DISPATCH_TOKEN"
+            exit 1
+          fi
+          if [[ -z "${TARGET_REPO}" ]]; then
+            echo "Missing TARGET_REPO"
+            exit 1
+          fi
+
+          # TARGET_REPO must be exactly OWNER/REPO (no URL, no spaces)
+          TARGET_REPO="$(echo -n "${TARGET_REPO}" | tr -d '\r\n' | xargs)"
+          if [[ ! "${TARGET_REPO}" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+            echo "Invalid TARGET_REPO format: [${TARGET_REPO}] (expected OWNER/REPO)"
+            exit 1
           fi
 
           API="https://api.github.com/repos/${TARGET_REPO}/dispatches"
+          echo "Dispatching to ${API}"
 
           curl -sSf -X POST \
             -H "Accept: application/vnd.github+json" \
