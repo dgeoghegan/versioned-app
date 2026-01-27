@@ -69,12 +69,22 @@ jobs:
           IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}"
           docker build -t "${IMAGE_URI}:${{ steps.tags.outputs.sha_tag }}" .
 
-      - name: Push immutable SHA tag
+      - name: Push immutable SHA tag (skip if exists)
         shell: bash
         run: |
           set -euo pipefail
           IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}"
-          docker push "${IMAGE_URI}:${{ steps.tags.outputs.sha_tag }}"
+          TAG="${{ steps.tags.outputs.sha_tag }}"
+
+          if aws ecr describe-images \
+              --repository-name "${ECR_REPOSITORY}" \
+              --image-ids imageTag="${TAG}" \
+              --region "${AWS_REGION}" >/dev/null 2>&1; then
+            echo "ECR tag ${TAG} already exists; skipping push."
+            exit 0
+          fi
+
+          docker push "${IMAGE_URI}:${TAG}"
 
       - name: Also tag + push semver (only on tag pushes)
         if: ${{ steps.tags.outputs.semver_tag != '' }}
