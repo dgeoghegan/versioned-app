@@ -40,8 +40,13 @@ class Handler(BaseHTTPRequestHandler):
         ver = get_version()
         sha = get_git_sha()
         
-        suffix = f" (sha-{sha})" if sha else ""
-        msg = f"{get_app_name()} env={env} version={ver}{suffix}\n".encode("utf-8")
+        suffix = f" ({sha})" if sha else ""
+        msg = (
+          f"app={get_app_name()}\n"
+          f"env={env}\n"
+          f"version={ver}\n"
+          f"{suffix}\n"
+        ).encode("utf-8")
 
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
