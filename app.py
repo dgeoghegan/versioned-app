@@ -40,7 +40,7 @@ class Handler(BaseHTTPRequestHandler):
         ver = get_version()
         sha = get_git_sha()
         
-        suffix = f" ({sha})" if sha else ""
+        suffix = f"({sha})" if sha else ""
         msg = (
           f"app={get_app_name()}\n"
           f"env={env}\n"
