@@ -38,7 +38,7 @@ class Handler(BaseHTTPRequestHandler):
 
         env = get_env()
         ver = get_version()
-        sha = get_sha()
+        sha = get_git_sha()
         
         suffix = f" (sha-{sha})" if sha else ""
         msg = f"{get_app_name()} env={env} version={ver}{suffix}\n".encode("utf-8")
