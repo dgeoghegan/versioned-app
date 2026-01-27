@@ -3,8 +3,11 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
+def get_env() -> str:
+    return os.getenv("APP_ENV") or os.getenv("ENV") or "unknown"
+
 def get_version() -> str:
-    return os.getenv("APP_VERSION") or os.getenv("VERSION") or "dev"
+    return os.getenv("APP_VERSION") or os.getenv("VERSION") or "unversioned"
 
 def get_git_sha() -> str:
     return os.getenv("GIT_SHA") or "unknown"
@@ -33,7 +36,13 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(body)
             return
 
-        msg = f"{get_app_name()} v{get_version()} ({get_git_sha()})\n".encode("utf-8")
+        env = get_env()
+        ver = get_version()
+        sha = get_sha()
+        
+        suffix = f" (sha-{sha})" if sha else ""
+        msg = f"{get_app_name()} env={env} version={ver}{suffix}\n".encode("utf-8")
+
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", str(len(msg)))
