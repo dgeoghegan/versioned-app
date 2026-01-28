@@ -15,6 +15,16 @@ def get_git_sha() -> str:
 def get_app_name() -> str:
     return os.getenv("APP_NAME") or "versioned-app"
 
+def compute_display_version() -> str:
+    app_version = (os.getenv("APP_VERSION") or "").strip()
+    git_sha = (os.getenv("GIT_SHA") or "").strip()
+
+    if app_version and app_version.lower() != "unversioned":
+        return app_version
+    if git_sha:
+        return f"sha-{git_sha}"
+    return "(unknown)"
+
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
@@ -37,15 +47,12 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         env = get_env()
-        ver = get_version()
-        sha = get_git_sha()
+        ver = compute_display_version()
         
-        suffix = f"({sha})" if sha else ""
         msg = (
           f"app={get_app_name()}\n"
           f"env={env}\n"
           f"version={ver}\n"
-          f"{suffix}\n"
         ).encode("utf-8")
 
         self.send_response(200)
