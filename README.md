@@ -9,6 +9,19 @@ The service returns:
 
 No auth, no database, no frameworks. Python standard library only.
 
+## Where this fits
+
+This repository contains the demo app code and the GitHub Actions workflow that builds a container image and pushes it to ECR.
+
+It does **not** provision AWS infrastructure and it does **not** deploy to Kubernetes directly. Deployments happen when `gitops-release-controller` updates environment values (via PR), and Argo CD reconciles.
+
+**End-to-end demo start:**
+To run the full demo (EKS cluster, Argo CD, ALB ingress), start with
+[`gitops-infra`](https://github.com/dgeoghegan/gitops-infra).
+
+**CI-only review:**
+You can review the image build/push workflow entirely within this repository, but running it requires the AWS artifacts from `gitops-infra` (ECR repo + GitHub OIDC + IAM role).
+
 ## Version resolution contract
 
 The service computes a display version using the following precedence:
